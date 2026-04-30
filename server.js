@@ -5,8 +5,6 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-connectDB();
-
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
@@ -25,6 +23,12 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.info(`[expense-ranking] Server running on port ${PORT}`);
-});
+
+const start = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.info(`[expense-ranking] Server running on port ${PORT}`);
+  });
+};
+
+start();
