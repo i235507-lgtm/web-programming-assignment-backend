@@ -8,7 +8,6 @@ const auth = require('../middleware/auth');
 const signToken = (userId) =>
   jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-// POST /api/auth/register
 router.post(
   '/register',
   [
@@ -34,7 +33,6 @@ router.post(
   }
 );
 
-// POST /api/auth/login
 router.post(
   '/login',
   [
@@ -58,7 +56,6 @@ router.post(
   }
 );
 
-// GET /api/auth/me
 router.get('/me', auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);

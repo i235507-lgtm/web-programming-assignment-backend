@@ -10,7 +10,6 @@ const CATEGORIES = [
   'Healthcare', 'Education', 'Shopping', 'Utilities', 'Other',
 ];
 
-// GET /api/expenses/rankings — MUST be before /:id to avoid route conflict
 router.get('/rankings', auth, async (req, res, next) => {
   try {
     const { period = 'all' } = req.query;
@@ -28,7 +27,6 @@ router.get('/rankings', auth, async (req, res, next) => {
 
     const matchStage = { $match: { userId, ...dateFilter } };
 
-    // Aggregation 1: Rank categories by total spend (core ranking logic)
     const categoryRankings = await Expense.aggregate([
       matchStage,
       {
@@ -43,7 +41,6 @@ router.get('/rankings', auth, async (req, res, next) => {
       { $sort: { totalAmount: -1 } },
     ]);
 
-    // Aggregation 2: Top 10 individual expenses by amount
     const topExpenses = await Expense.aggregate([
       matchStage,
       { $sort: { amount: -1 } },
@@ -51,7 +48,6 @@ router.get('/rankings', auth, async (req, res, next) => {
       { $project: { title: 1, amount: 1, category: 1, date: 1 } },
     ]);
 
-    // Overall totals
     const totalsResult = await Expense.aggregate([
       matchStage,
       { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } },
@@ -78,7 +74,6 @@ router.get('/rankings', auth, async (req, res, next) => {
   }
 });
 
-// GET /api/expenses
 router.get('/', auth, async (req, res, next) => {
   try {
     const { category, startDate, endDate, sort = 'date', order = 'desc' } = req.query;
@@ -101,7 +96,6 @@ router.get('/', auth, async (req, res, next) => {
   }
 });
 
-// POST /api/expenses
 router.post(
   '/',
   auth,
@@ -132,7 +126,6 @@ router.post(
   }
 );
 
-// DELETE /api/expenses/:id
 router.delete('/:id', auth, async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
