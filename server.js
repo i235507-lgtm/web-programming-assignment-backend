@@ -14,6 +14,10 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/expenses', require('./routes/expenses'));
 
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use((err, req, res, next) => {
   console.error(`[expense-ranking] Unhandled error on ${req.method} ${req.path}`, {
     message: err.message,
