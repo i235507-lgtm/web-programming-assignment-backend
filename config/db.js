@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+    });
     console.info(`[expense-ranking] MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
     console.error('[expense-ranking] MongoDB connection failed:', err.message);
